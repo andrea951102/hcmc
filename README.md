@@ -62,7 +62,7 @@ Google Sheets 셀은 한 칸에 5만 자까지 들어가므로 2,000자는 넉�
   스크램블 텍스트, 스크롤 리빌, 마키, 회전 배지, 푸터 패럴랙스.
   `prefers-reduced-motion`이 켜져 있으면 모두 꺼집니다.
   GSAP이 로드되지 않아도 페이지는 정상적으로 보입니다.
-- 히어로의 단색 패널은 사진 자리입니다. 파티 사진을 넣으면 훨씬 좋아집니다.
+- 히어로 배경은 `assets/hero.mp4` 가 반복 재생됩니다 (아래 참고).
 
 ## 3. 배포 (무료 정적 호스팅)
 
@@ -75,23 +75,42 @@ Google Sheets 셀은 한 칸에 5만 자까지 들어가므로 2,000자는 넉�
 - 웹앱 URL은 공개되는 값이라 누구나 POST를 보낼 수 있습니다. 숨김 필드(honeypot)로 단순한 봇은 걸러지지만, 장난 신청이 많아지면 Google reCAPTCHA를 추가하는 걸 권합니다.
 - 시트에 수식이 실행되지 않도록 `=`, `+`, `-`, `@`로 시작하는 입력값 앞에는 `'`를 붙여 저장합니다.
 
-## 히어로 배경 영상 (선택)
+## 히어로 배경 영상
 
-`assets/hero.mp4` 를 두면 히어로 블록 배경에서 소리 없이 반복 재생됩니다. 재생이 시작되면 글자가 흰색으로 바뀌고 어두운 막이 깔려 읽기 좋게 됩니다. 파일이 없거나 브라우저가 자동재생을 막으면 지금의 그라데이션이 그대로 보이므로, 넣지 않아도 페이지는 멀쩡합니다.
+`assets/hero.mp4` 가 히어로 블록 배경에서 소리 없이 반복 재생됩니다 (720×900, 6.8초, 약 1.9MB).
+재생이 시작되면 `.stage` 에 `has-vid` 가 붙어 글자가 흰색으로 바뀌고 어두운 막이 깔립니다.
+파일이 없거나 브라우저가 자동재생을 막으면 원래의 그라데이션이 그대로 보이므로, 영상을 지워도 페이지는 멀쩡합니다.
 
-영상 조건:
+영상을 바꿀 때 조건:
 
 - **형식** H.264 MP4 (`-c:v libx264 -pix_fmt yuv420p -movflags +faststart`). 아이폰까지 재생되는 조합입니다
-- **길이** 6~10초, 끊김 없이 반복되는 구간
-- **크기** 세로 화면이라 720×900 정도면 충분합니다. 더 키워도 화면에서 잘립니다
+- **길이** 6~10초
+- **크기** 720×900 (세로 4:5). 더 키워도 화면에서 잘립니다
 - **용량** 2~4MB 를 넘기지 마세요. 모바일 데이터로 들어오는 사람이 대부분입니다
 - **소리** 없어도 됩니다 (`-an`). 어차피 음소거로 재생합니다
+- **밝기** 어두운 편이 좋습니다. 위에 흰 글자가 올라갑니다
 
-변환 예시:
+가로 원본을 세로로 자르고, 끝과 처음을 0.8초 겹쳐 이음매 없이 도는 클립으로 만드는 예시입니다
+(`D` 는 원본 길이, 아래는 7.64초 기준):
 
 ```bash
-ffmpeg -i 원본.mp4 -t 8 -vf "scale=-2:900,crop=720:900" \
-  -c:v libx264 -crf 30 -preset slow -pix_fmt yuv420p -movflags +faststart -an \
+ffmpeg -i 원본.mp4 -filter_complex "
+[0:v]crop=864:1080:528:0,scale=720:900,setsar=1,fps=25[v];
+[v]split=3[a][b][c];
+[a]trim=0.8:6.84,setpts=PTS-STARTPTS[mid];
+[b]trim=6.84:7.64,setpts=PTS-STARTPTS[tail];
+[c]trim=0:0.8,setpts=PTS-STARTPTS[head];
+[tail][head]blend=all_expr='A*(1-(T/0.8))+B*(T/0.8)'[seam];
+[mid][seam]concat=n=2:v=1:a=0[out]" -map "[out]" \
+  -c:v libx264 -crf 25 -preset slow -pix_fmt yuv420p -movflags +faststart -an \
+  assets/hero.mp4
+```
+
+그냥 잘라 쓰기만 할 거라면 이걸로 충분합니다:
+
+```bash
+ffmpeg -i 원본.mp4 -t 8 -vf "crop=864:1080:528:0,scale=720:900" \
+  -c:v libx264 -crf 25 -preset slow -pix_fmt yuv420p -movflags +faststart -an \
   assets/hero.mp4
 ```
 
