@@ -230,8 +230,8 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
 .foot-marquee { overflow: hidden; }
 .foot-track { display: flex; width: max-content; will-change: transform; }
 .foot-track span {
-  font-weight: 900; font-size: var(--fs-mega); line-height: 0.82;
-  letter-spacing: -0.045em; white-space: nowrap;
+  font-weight: 900; font-size: clamp(26px, 7.4vw, 62px); line-height: 1.1;
+  letter-spacing: -0.025em; white-space: nowrap;
 }
 .foot-track .dot { color: var(--pop); }
 
@@ -507,7 +507,7 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     fitWm();
 
     /* [트랙 id, 초당 픽셀] — 푸터는 글자가 커서 더 느리게 */
-    [['track', 70], ['footTrack', 44]].forEach(function (cfg) {
+    [['track', 70], ['footTrack', 58]].forEach(function (cfg) {
       var el = document.getElementById(cfg[0]);
       if (!el) return;
       var w = buildMarquee(el);
