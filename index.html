@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2026 Party</title>
+  <meta name="description" content="2026 Party 참가 신청 페이지" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0d17;
+      --surface: #1a1726;
+      --surface-2: #241f35;
+      --text: #f4f1fb;
+      --muted: #a39cb8;
+      --accent: #ff5c8a;
+      --accent-2: #ffb547;
+      --line: #322c47;
+      --ok: #3ddc97;
+      --err: #ff6b6b;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 13, 23, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    nav .logo { font-weight: 900; letter-spacing: -0.02em; }
+    nav ul { display: flex; gap: 18px; list-style: none; margin: 0; padding: 0; font-size: 14px; }
+    nav ul a { text-decoration: none; color: var(--muted); }
+    nav ul a:hover { color: var(--text); }
+    @media (max-width: 560px) { nav ul { gap: 12px; font-size: 13px; } nav ul li.hide-sm { display: none; } }
+
+    /* Hero */
+    .hero { padding: 88px 0 72px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; inset: -40% -20% auto; height: 120%;
+      background: radial-gradient(closest-side, rgba(255, 92, 138, 0.28), transparent 70%),
+                  radial-gradient(closest-side at 70% 40%, rgba(255, 181, 71, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block; padding: 6px 14px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--surface);
+      font-size: 13px; color: var(--accent-2); margin-bottom: 20px; position: relative;
+    }
+    .hero h1 {
+      font-size: clamp(44px, 10vw, 88px); line-height: 1.05; margin: 0 0 16px;
+      font-weight: 900; letter-spacing: -0.04em; position: relative;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p { color: var(--muted); font-size: 18px; margin: 0 auto 32px; max-width: 520px; position: relative; }
+    .btn {
+      display: inline-block; padding: 14px 28px; border-radius: 999px; border: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #1a0f14; font-weight: 700; font-size: 16px; text-decoration: none;
+      cursor: pointer; font-family: inherit; position: relative;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Sections */
+    section { padding: 64px 0; border-top: 1px solid var(--line); }
+    .eyebrow { color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    h2 { font-size: 32px; margin: 4px 0 24px; letter-spacing: -0.02em; }
+    .lead { color: var(--muted); font-size: 17px; margin: 0 0 28px; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .card .emoji { font-size: 28px; }
+    .card h3 { margin: 8px 0 6px; font-size: 17px; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+
+    /* Timeline */
+    .timeline { list-style: none; margin: 0; padding: 0; }
+    .timeline li {
+      display: grid; grid-template-columns: 84px 1fr; gap: 16px;
+      padding: 18px 0; border-bottom: 1px dashed var(--line);
+    }
+    .timeline li:last-child { border-bottom: 0; }
+    .timeline time { color: var(--accent-2); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .timeline h3 { margin: 0 0 2px; font-size: 17px; }
+    .timeline p { margin: 0; color: var(--muted); font-size: 15px; }
+
+    /* Info */
+    .info { display: grid; gap: 12px; }
+    .info-row {
+      display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: start;
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px;
+    }
+    .info-row dt { color: var(--muted); font-size: 14px; margin: 0; }
+    .info-row dd { margin: 0; font-weight: 500; }
+    .info-row dd small { display: block; color: var(--muted); font-weight: 400; }
+    .copy {
+      margin-top: 8px; padding: 6px 12px; font-size: 13px; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--surface-2); color: var(--text);
+      cursor: pointer; font-family: inherit;
+    }
+    .map-link { display: inline-block; margin-top: 8px; font-size: 14px; color: var(--accent-2); }
+
+    /* Form */
+    form { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 18px; }
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 14px; font-weight: 500; }
+    .field label .req { color: var(--accent); margin-left: 2px; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line);
+      background: var(--bg); color: var(--text); font-size: 16px; font-family: inherit;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+    .field textarea { min-height: 96px; resize: vertical; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 560px) { .row-2 { grid-template-columns: 1fr; } }
+    .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--muted); }
+    .consent input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .status { font-size: 15px; min-height: 1.6em; margin: 0; }
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--err); }
+
+    footer { padding: 40px 0 56px; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="wrap">
+      <span class="logo">2026 PARTY</span>
+      <ul>
+        <li><a href="#about">소개</a></li>
+        <li><a href="#program">프로그램</a></li>
+        <li><a href="#info">안내</a></li>
+        <li class="hide-sm"><a href="#apply">신청</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="badge">2026.12.20 (SAT) · 선착순 50명</span>
+      <h1>2026 Party</h1>
+      <p>한 해를 마무리하고 새해를 맞이하는 밤. 좋은 사람들과 음악, 음식, 이야기를 나눠요.</p>
+      <a class="btn" href="#apply">지금 신청하기</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. 소개 -->
+    <section id="about">
+      <div class="wrap">
+        <div class="eyebrow">About</div>
+        <h2>파티 소개</h2>
+        <p class="lead">
+          (여기에 파티 소개 문구를 넣으세요) 2026 Party는 올해를 함께 보낸 사람들이 한자리에 모여
+          서로의 한 해를 축하하는 자리입니다. 처음 오시는 분도 편하게 어울릴 수 있도록 준비했어요.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <div class="emoji">🎶</div>
+            <h3>라이브 & DJ</h3>
+            <p>저녁 내내 이어지는 음악과 함께해요.</p>
+          </div>
+          <div class="card">
+            <div class="emoji">🍽️</div>
+            <h3>케이터링</h3>
+            <p>핑거푸드와 음료가 무제한으로 준비됩니다.</p>
+          </div>
+          <div class="card">
+            <div class="emoji">🎁</div>
+            <h3>럭키 드로우</h3>
+            <p>참가자 전원 추첨 이벤트가 있어요.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 프로그램 -->
+    <section id="program">
+      <div class="wrap">
+        <div class="eyebrow">Program</div>
+        <h2>프로그램</h2>
+        <ol class="timeline">
+          <li><time>18:30</time><div><h3>입장 & 웰컴 드링크</h3><p>명찰 수령 후 자유롭게 입장해요.</p></div></li>
+          <li><time>19:00</time><div><h3>오프닝</h3><p>호스트 인사와 오늘의 순서 안내.</p></div></li>
+          <li><time>19:30</time><div><h3>디너 & 네트워킹</h3><p>테이블별 아이스브레이킹 게임.</p></div></li>
+          <li><time>20:30</time><div><h3>2026 회고 토크</h3><p>올해의 순간들을 함께 돌아봐요.</p></div></li>
+          <li><time>21:15</time><div><h3>럭키 드로우</h3><p>경품 추첨 이벤트.</p></div></li>
+          <li><time>21:45</time><div><h3>DJ 타임 & 클로징</h3><p>22:30 종료 예정.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 3. 안내 -->
+    <section id="info">
+      <div class="wrap">
+        <div class="eyebrow">Information</div>
+        <h2>참가 안내</h2>
+        <dl class="info">
+          <div class="info-row">
+            <dt>일시</dt>
+            <dd>2026년 12월 20일 (토) 18:30 – 22:30</dd>
+          </div>
+          <div class="info-row">
+            <dt>장소</dt>
+            <dd>
+              OO라운지 (서울시 OO구 OO로 123, 2층)
+              <small>OO역 3번 출구 도보 5분 · 주차 불가</small>
+              <a class="map-link" href="https://map.naver.com/" target="_blank" rel="noopener">지도 보기 →</a>
+            </dd>
+          </div>
+          <div class="info-row">
+            <dt>참가비</dt>
+            <dd>1인 30,000원 <small>음식 · 음료 · 경품 포함</small></dd>
+          </div>
+          <div class="info-row">
+            <dt>입금계좌</dt>
+            <dd>
+              <span id="account">OO은행 000-0000-0000-00</span> (예금주: 홍길동)
+              <small>신청서의 ‘입금자명’과 같은 이름으로 입금해 주세요. 입금 확인 후 확정 문자를 드려요.</small>
+              <button type="button" class="copy" id="copyBtn">계좌번호 복사</button>
+            </dd>
+          </div>
+          <div class="info-row">
+            <dt>문의</dt>
+            <dd>010-0000-0000 / 카카오톡 오픈채팅 <a href="#">링크</a></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 4. 신청 폼 -->
+    <section id="apply">
+      <div class="wrap">
+        <div class="eyebrow">Apply</div>
+        <h2>참가 신청</h2>
+        <p class="lead">신청서 작성 → 참가비 입금 → 확정 문자 순서로 진행됩니다.</p>
+
+        <form id="applyForm" novalidate>
+          <div class="row-2">
+            <div class="field">
+              <label for="name">이름<span class="req">*</span></label>
+              <input id="name" name="name" required maxlength="30" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="phone">연락처<span class="req">*</span></label>
+              <input id="phone" name="phone" type="tel" required placeholder="010-1234-5678" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="email">이메일</label>
+              <input id="email" name="email" type="email" autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="count">참가 인원<span class="req">*</span></label>
+              <select id="count" name="count" required>
+                <option value="1">1명</option>
+                <option value="2">2명</option>
+                <option value="3">3명</option>
+                <option value="4">4명</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="depositor">입금자명<span class="req">*</span></label>
+            <input id="depositor" name="depositor" required maxlength="30" />
+          </div>
+          <div class="field">
+            <label for="memo">하고 싶은 말 / 요청사항</label>
+            <textarea id="memo" name="memo" maxlength="500" placeholder="알레르기, 동행인 이름 등"></textarea>
+          </div>
+
+          <!-- 스팸 봇 방지용 (사람에게는 안 보임) -->
+          <div class="hp" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" id="agree" name="agree" required />
+            <span>개인정보(이름, 연락처, 이메일)는 파티 운영 목적으로만 쓰이고, 행사 종료 후 1개월 안에 지워집니다. 이에 동의합니다.</span>
+          </label>
+
+          <button class="btn" type="submit" id="submitBtn">신청서 제출</button>
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Party · Made with ♥</footer>
+
+  <script>
+    // Apps Script 웹앱 배포 후 받은 URL을 여기에 붙여넣으세요 (README.md 참고)
+    const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+    // 계좌번호 복사
+    document.getElementById("copyBtn").addEventListener("click", async (e) => {
+      const text = document.getElementById("account").textContent.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        e.target.textContent = "복사됨 ✓";
+      } catch {
+        e.target.textContent = text;
+      }
+      setTimeout(() => (e.target.textContent = "계좌번호 복사"), 2000);
+    });
+
+    // 신청 폼 제출
+    const form = document.getElementById("applyForm");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function setStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = "status" + (type ? " " + type : "");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = new FormData(form);
+      if (!data.get("name") || !data.get("phone") || !data.get("depositor")) {
+        return setStatus("이름, 연락처, 입금자명을 입력해 주세요.", "err");
+      }
+      if (!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(data.get("phone"))) {
+        return setStatus("연락처 형식을 확인해 주세요. (예: 010-1234-5678)", "err");
+      }
+      if (!data.get("agree")) {
+        return setStatus("개인정보 수집에 동의해 주세요.", "err");
+      }
+
+      submitBtn.disabled = true;
+      setStatus("제출 중…");
+
+      try {
+        // x-www-form-urlencoded 로 보내면 CORS preflight 없이 Apps Script 에 바로 전달됩니다
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: new URLSearchParams(data) });
+        const json = await res.json();
+        if (json.result !== "success") throw new Error(json.message || "failed");
+        form.reset();
+        setStatus("신청이 접수되었어요! 참가비를 입금해 주시면 확인 후 연락드릴게요. 🎉", "ok");
+      } catch (err) {
+        console.error(err);
+        setStatus("제출에 실패했어요. 잠시 후 다시 시도하거나 문의처로 연락해 주세요.", "err");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
