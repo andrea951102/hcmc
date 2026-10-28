@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>2026 Party</title>
-<meta name="description" content="2026 Party · 12.20 SAT 19:00 · 선착순 50명. 술 한 잔, 게임 한 판, 그리고 처음 만나는 사람들.">
+<meta name="description" content="2026 Party · 12.20 SAT 19:00 · 선착순 16명. 술 한 잔, 게임 한 판, 그리고 처음 만나는 사람들.">
 <meta name="theme-color" content="#0B0B0B">
 <meta property="og:title" content="2026 Party">
-<meta property="og:description" content="12.20 SAT 19:00 · 선착순 50명. 올해의 마지막 밤.">
+<meta property="og:description" content="12.20 SAT 19:00 · 선착순 16명. 올해의 마지막 밤.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -226,12 +226,14 @@ form { display: grid; gap: 20px; margin-top: 24px; }
 .status.err { color: var(--pop); }
 
 /* 푸터 */
-footer { background: var(--panel); color: var(--panel-ink); padding-top: 36px; padding-bottom: 32px; overflow: hidden; }
-.foot-grid { display: grid; gap: 22px; }
-@media (min-width: 620px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
-.foot-grid h2 { margin: 0 0 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.6; }
-.foot-grid p { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.5; }
-.foot-wm { margin-top: 30px; font-weight: 900; font-size: var(--fs-mega); line-height: 0.80; letter-spacing: -0.045em; white-space: nowrap; }
+footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; padding-bottom: 40px; overflow: hidden; }
+.foot-marquee { overflow: hidden; }
+.foot-track { display: flex; width: max-content; will-change: transform; }
+.foot-track span {
+  font-weight: 900; font-size: var(--fs-mega); line-height: 0.82;
+  letter-spacing: -0.045em; white-space: nowrap;
+}
+.foot-track .dot { color: var(--pop); }
 
 /* 전체화면 메뉴 */
 .overlay {
@@ -270,7 +272,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 36px; p
     <div class="in"><h1 class="mega" id="heroWm">PARTY</h1></div>
     <div class="in hero-meta">
       <span data-scramble="12.20 SAT">12.20 SAT</span>
-      <span>선착순 50명</span>
+      <span>선착순 16명</span>
       <span data-scramble="19:00">19:00</span>
     </div>
 
@@ -283,11 +285,11 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 36px; p
           <defs><path id="circ" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" fill="none"></path></defs>
           <g class="badge-spin">
             <text font-size="9.4" font-weight="700" letter-spacing="1.7" fill="currentColor">
-              <textPath href="#circ">선착순 50명 • 2026.12.20 • 스튜디오 파티 • </textPath>
+              <textPath href="#circ">선착순 16명 • 2026.12.20 • 스튜디오 파티 • </textPath>
             </text>
           </g>
         </svg>
-        <span class="badge-core">50<br>SEATS</span>
+        <span class="badge-core">16<br>SEATS</span>
       </div>
     </div>
 
@@ -312,7 +314,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 36px; p
   <!-- 마키 -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track" id="track">
-      <span>2026 PARTY <b class="dot">●</b> 12.20 SAT <b class="dot">●</b> 선착순 50명 <b class="dot">●</b>&nbsp;</span>
+      <span>HEUNG CHUNG MANG CHUNG PARTY <b class="dot">●</b>&nbsp;</span>
     </div>
   </div>
 
@@ -430,12 +432,10 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 36px; p
 </main>
 
 <footer>
-  <div class="in">
-    <div class="foot-grid">
-      <div><h2>장소</h2><p>[장소 이름]<br>[주소를 넣어주세요]</p></div>
-      <div><h2>문의</h2><p>[010-0000-0000]<br>카카오톡 오픈채팅</p></div>
+  <div class="foot-marquee" aria-hidden="true">
+    <div class="foot-track" id="footTrack">
+      <span>HEUNG CHUNG MANG CHUNG PARTY&nbsp;<b class="dot">●</b>&nbsp;</span>
     </div>
-    <div class="foot-wm">2026</div>
   </div>
 </footer>
 
@@ -494,9 +494,8 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     })(start);
   }
 
-  /* ── 마키 ── */
-  var track = document.getElementById('track');
-  function buildMarquee() {
+  /* ── 마키: 한 덩어리를 화면 두 배 너비만큼 복제한 뒤 계속 흘린다 ── */
+  function buildMarquee(track) {
     var unit = track.firstElementChild;
     while (track.children.length > 1) track.removeChild(track.lastElementChild);
     var need = Math.ceil((window.innerWidth * 2) / Math.max(unit.offsetWidth, 1)) + 1;
@@ -506,23 +505,30 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
 
   function start() {
     fitWm();
-    var unitW = buildMarquee();
+
+    /* [트랙 id, 초당 픽셀] — 푸터는 글자가 커서 더 느리게 */
+    [['track', 70], ['footTrack', 44]].forEach(function (cfg) {
+      var el = document.getElementById(cfg[0]);
+      if (!el) return;
+      var w = buildMarquee(el);
+      if (hasGsap && !reduce) {
+        gsap.to(el, { x: -w, duration: w / cfg[1], ease: 'none', repeat: -1 });
+      }
+    });
 
     if (hasGsap && !reduce) {
-      gsap.to(track, { x: -unitW, duration: unitW / 70, ease: 'none', repeat: -1 });
       gsap.from('#heroWm', { yPercent: 108, duration: 1.05, ease: 'expo.out' });
       gsap.from('#stage', { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.15, ease: 'expo.out', delay: 0.12 });
       gsap.from('.lede > *', { y: 26, opacity: 0, duration: 0.8, stagger: 0.09, ease: 'power3.out', delay: 0.45 });
     }
 
     if (hasGsap && window.ScrollTrigger && !reduce) {
-      gsap.utils.toArray('.listing li, .prog-row, .info-grid > div, .account, .field, .foot-grid > div').forEach(function (el) {
+      gsap.utils.toArray('.listing li, .prog-row, .info-grid > div, .account, .field').forEach(function (el) {
         gsap.from(el, { y: 30, opacity: 0, duration: 0.75, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
       });
       gsap.utils.toArray('.big').forEach(function (el) {
         gsap.from(el, { y: 44, opacity: 0, duration: 0.9, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
       });
-      gsap.to('.foot-wm', { xPercent: -14, ease: 'none', scrollTrigger: { trigger: 'footer', start: 'top bottom', end: 'bottom bottom', scrub: 0.6 } });
       gsap.to('.stage-blob', { yPercent: -18, ease: 'none', scrollTrigger: { trigger: '#stage', start: 'top bottom', end: 'bottom top', scrub: 0.8 } });
     }
 
