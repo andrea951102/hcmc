@@ -15,6 +15,8 @@
  * 항목을 추가할 때는 HEADERS 와 appendRow 끝에 나란히 덧붙이세요.
  */
 
+// 신청 내용을 적을 스프레드시트 ID (주소창의 /d/ 와 /edit 사이 문자열)
+const SPREADSHEET_ID = "1-msx53U4Wd6apKZ4Uu1cB-B44gNW4M5xTu9EJKcRP_s";
 const SHEET_NAME = "신청";
 const HEADERS = [
   "접수시각", "이름", "연락처", "나이", "입금자명", "코멘트", "입금확인",
@@ -65,7 +67,8 @@ function doGet() {
 }
 
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  // ID 로 열기 때문에 시트에 붙지 않은 독립 스크립트에서도 동작합니다
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
