@@ -14,8 +14,10 @@
  * 항목을 추가할 때는 HEADERS 와 appendRow 끝에 나란히 덧붙이세요.
  */
 
-// 신청 내용을 적을 스프레드시트 ID (주소창의 /d/ 와 /edit 사이 문자열)
-const SPREADSHEET_ID = "1-msx53U4Wd6apKZ4Uu1cB-B44gNW4M5xTu9EJKcRP_s";
+// 신청 내용을 적을 스프레드시트 ID.
+// 시트 주소 https://docs.google.com/spreadsheets/d/<이 부분>/edit 에서 가져와
+// Apps Script 편집기에 붙여넣은 코드에만 채워 넣으세요. 이 저장소는 공개라서 비워 둡니다.
+const SPREADSHEET_ID = "여기에_스프레드시트_ID";
 const SHEET_NAME = "신청";
 const HEADERS = [
   "접수시각", "이름", "연락처", "나이", "입금자명", "코멘트", "입금확인",

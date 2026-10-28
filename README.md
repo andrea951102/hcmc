@@ -10,7 +10,10 @@
 
 1. Google Drive에서 새 스프레드시트를 만듭니다 (예: `2026 Party 신청자`).
 2. 메뉴 **확장 프로그램 → Apps Script**를 엽니다.
-3. 기본 `Code.gs` 내용을 지우고 `apps-script/Code.gs` 내용을 붙여넣은 뒤 저장합니다.
+3. 기본 `Code.gs` 내용을 지우고 `apps-script/Code.gs` 내용을 붙여넣습니다.
+   맨 위 `SPREADSHEET_ID` 를 본인 시트 ID 로 바꾸고 저장합니다.
+   시트 주소 `https://docs.google.com/spreadsheets/d/`**`이 부분`**`/edit` 이 ID 입니다.
+   (이 저장소는 공개라서 실제 ID 는 넣어 두지 않습니다. 붙여넣은 쪽에만 채우면 됩니다.)
 4. 오른쪽 위 **배포 → 새 배포**를 누릅니다.
    - 유형 선택(톱니바퀴): **웹 앱**
    - 다음 사용자 인증 정보로 실행: **나**
