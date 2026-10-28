@@ -6,8 +6,6 @@
  *  name        이름        필수   30자
  *  phone       연락처      필수   30자
  *  age         나이        필수   숫자 19–99
- *  email       이메일      선택   80자
- *  count       참가 인원   필수   숫자 1–4
  *  depositor   입금자명    필수   30자
  *  memo        코멘트      선택   2000자 (요청사항·제안을 한 칸에서 받습니다)
  *  agree       동의 여부   필수   (페이지에서만 확인, 시트에는 저장하지 않음)
@@ -19,8 +17,7 @@
 
 const SHEET_NAME = "신청";
 const HEADERS = [
-  "접수시각", "이름", "연락처", "나이", "이메일",
-  "인원", "입금자명", "코멘트", "입금확인",
+  "접수시각", "이름", "연락처", "나이", "입금자명", "코멘트", "입금확인",
 ];
 
 function doPost(e) {
@@ -48,8 +45,6 @@ function doPost(e) {
       clean_(p.name, 30),
       clean_(p.phone, 30),
       age,
-      clean_(p.email, 80),
-      Math.min(Math.max(Number(p.count) || 1, 1), 4),
       clean_(p.depositor, 30),
       clean_(p.memo, 2000),
       false,
@@ -78,8 +73,8 @@ function getSheet_() {
     sheet.setFrozenRows(1);
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
     // 긴 글이 들어가는 코멘트 칸은 줄바꿈해서 넓게 보이게
-    sheet.getRange("H:H").setWrap(true);
-    sheet.setColumnWidth(8, 460);
+    sheet.getRange("F:F").setWrap(true);
+    sheet.setColumnWidth(6, 460);
   }
   return sheet;
 }
