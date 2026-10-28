@@ -9,8 +9,7 @@
  *  email       이메일      선택   80자
  *  count       참가 인원   필수   숫자 1–4
  *  depositor   입금자명    필수   30자
- *  memo        하고 싶은 말 선택   500자
- *  suggestion  제안 의견   선택   2000자
+ *  memo        코멘트      선택   2000자 (요청사항·제안을 한 칸에서 받습니다)
  *  agree       동의 여부   필수   (페이지에서만 확인, 시트에는 저장하지 않음)
  *  website     봇 방지용 숨김 필드 — 값이 있으면 저장하지 않음
  *
@@ -21,7 +20,7 @@
 const SHEET_NAME = "신청";
 const HEADERS = [
   "접수시각", "이름", "연락처", "나이", "이메일",
-  "인원", "입금자명", "하고 싶은 말", "제안 의견", "입금확인",
+  "인원", "입금자명", "코멘트", "입금확인",
 ];
 
 function doPost(e) {
@@ -52,8 +51,7 @@ function doPost(e) {
       clean_(p.email, 80),
       Math.min(Math.max(Number(p.count) || 1, 1), 4),
       clean_(p.depositor, 30),
-      clean_(p.memo, 500),
-      clean_(p.suggestion, 2000),
+      clean_(p.memo, 2000),
       false,
     ]);
     // 입금확인 칸을 체크박스로
@@ -79,10 +77,9 @@ function getSheet_() {
     sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
-    // 긴 글이 들어가는 두 칸은 줄바꿈해서 보이게
-    sheet.getRange("H:I").setWrap(true);
-    sheet.setColumnWidth(8, 260);
-    sheet.setColumnWidth(9, 420);
+    // 긴 글이 들어가는 코멘트 칸은 줄바꿈해서 넓게 보이게
+    sheet.getRange("H:H").setWrap(true);
+    sheet.setColumnWidth(8, 460);
   }
   return sheet;
 }
