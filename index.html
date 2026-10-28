@@ -143,22 +143,6 @@ body::before {
 .cta:hover .arrow { transform: translateX(6px); }
 .cta[disabled] { opacity: 0.55; cursor: not-allowed; }
 
-/* 큰 목록 */
-.listing { padding-top: 10px; padding-bottom: 44px; }
-.listing ul { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--line); }
-.listing li { border-bottom: 1px solid var(--line); }
-.listing a {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 14px; padding: 15px 0; text-decoration: none; min-height: 44px;
-}
-.listing .lbl {
-  font-weight: 900; font-size: clamp(27px, 8.2vw, 62px);
-  line-height: 1.04; letter-spacing: -0.035em;
-  transition: color 0.3s cubic-bezier(0.5, 1, 0.89, 1);
-}
-.listing a:hover .lbl { color: var(--pop); }
-.listing .num { font-size: 11px; font-weight: 700; color: var(--mute); letter-spacing: 0.1em; flex-shrink: 0; }
-
 /* 마키 */
 .marquee { overflow: hidden; background: var(--panel); color: var(--panel-ink); padding: 13px 0; }
 .marquee-track { display: flex; width: max-content; will-change: transform; }
@@ -169,19 +153,41 @@ body::before {
 }
 .marquee .dot { color: var(--pop); }
 
-/* 프로그램 */
+/* 그날 하는 것 = 프로그램 (펼침 목록) */
 .program { padding-top: 44px; padding-bottom: 44px; }
-.prog-row {
-  display: grid; grid-template-columns: 68px 1fr; gap: 5px 16px;
-  padding: 16px 0; border-top: 1px solid var(--line); align-items: baseline;
+.tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+.tags span {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+  border: 1px solid var(--line); color: var(--mute); padding: 6px 12px;
 }
-.prog-row:last-of-type { border-bottom: 1px solid var(--line); }
-.prog-row time {
-  font-weight: 700; font-size: 15px; color: var(--pop);
+.sched { margin-top: 26px; border-top: 1px solid var(--line); }
+.sched details { border-bottom: 1px solid var(--line); }
+.sched summary {
+  list-style: none; cursor: pointer; display: flex; align-items: baseline;
+  gap: 14px; padding: 15px 0; min-height: 44px;
+}
+.sched summary::-webkit-details-marker { display: none; }
+.sched summary time {
+  flex: 0 0 60px; font-weight: 700; font-size: 13px; color: var(--pop);
   font-variant-numeric: tabular-nums;
 }
-.prog-row h3 { margin: 0 0 3px; font-size: 18px; font-weight: 800; letter-spacing: -0.015em; }
-.prog-row p { margin: 0; font-size: 14px; color: var(--mute); line-height: 1.6; }
+.sched .ttl {
+  flex: 1 1 auto; min-width: 0;
+  font-weight: 900; font-size: clamp(21px, 6vw, 44px);
+  line-height: 1.08; letter-spacing: -0.03em;
+  transition: color 0.3s cubic-bezier(0.5, 1, 0.89, 1);
+}
+.sched summary:hover .ttl { color: var(--pop); }
+.sched .mk {
+  flex: 0 0 auto; font-size: 22px; font-weight: 400; line-height: 1;
+  color: var(--mute); transition: transform 0.3s cubic-bezier(0.5, 1, 0.89, 1);
+}
+.sched details[open] .mk { transform: rotate(45deg); }
+.sched .body { padding: 0 0 18px 74px; }
+.sched .body p { margin: 0; font-size: 15px; color: var(--mute); line-height: 1.7; }
+.sched details[open] .body { animation: slip 0.45s cubic-bezier(0.5, 1, 0.89, 1); }
+@keyframes slip { from { opacity: 0; transform: translateY(-8px); } }
+@media (max-width: 460px) { .sched .body { padding-left: 0; } }
 .tag {
   display: inline-block; vertical-align: middle; margin-left: 6px;
   font-size: 9px; font-weight: 800; letter-spacing: 0.14em;
@@ -309,17 +315,6 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
     </div>
   </section>
 
-  <!-- 그날 하는 것 -->
-  <section class="listing in" id="about">
-    <span class="kicker">그날 하는 것</span>
-    <ul>
-      <li><a href="#program"><span class="lbl">술게임</span><span class="num">01</span></a></li>
-      <li><a href="#program"><span class="lbl">DJ 셋</span><span class="num">02</span></a></li>
-      <li><a href="#program"><span class="lbl">무제한 안주</span><span class="num">03</span></a></li>
-      <li><a href="#program"><span class="lbl">새로운 사람</span><span class="num">04</span></a></li>
-    </ul>
-  </section>
-
   <!-- 마키 -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track" id="track">
@@ -327,34 +322,64 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
     </div>
   </div>
 
-  <!-- 프로그램 -->
+  <!-- 그날 하는 것 (= 프로그램) -->
   <section class="program in" id="program">
-    <span class="kicker">프로그램</span>
-    <h2 class="big" style="margin-top: 9px; margin-bottom: 22px">그날 밤의 순서</h2>
+    <span class="kicker">그날 하는 것</span>
+    <h2 class="big" style="margin-top: 9px">그날 밤의 순서</h2>
 
-    <div class="prog-row">
-      <time data-scramble="19:00">19:00</time>
-      <div><h3>오픈 · 웰컴 드링크</h3><p>이름표 받고 편한 자리에 앉으세요.</p></div>
+    <div class="tags">
+      <span>술게임</span><span>DJ 셋</span><span>무제한 안주</span><span>새로운 사람</span>
     </div>
-    <div class="prog-row">
-      <time data-scramble="19:40">19:40</time>
-      <div><h3>인사 &amp; 아이스브레이킹</h3><p>테이블별 짧은 소개. 길지 않게 끝냅니다.</p></div>
-    </div>
-    <div class="prog-row">
-      <time data-scramble="20:20">20:20</time>
-      <div><h3>술게임 토너먼트 <span class="tag">HIGHLIGHT</span></h3><p>테이블별로 붙고, 이긴 팀은 다음 테이블로. 우승 팀에게 상품이 있습니다.</p></div>
-    </div>
-    <div class="prog-row">
-      <time data-scramble="21:10">21:10</time>
-      <div><h3>안주 타임 &amp; 자유 네트워킹</h3><p>음식이 다시 채워집니다. 자리는 마음대로.</p></div>
-    </div>
-    <div class="prog-row">
-      <time data-scramble="22:00">22:00</time>
-      <div><h3>DJ 타임</h3><p>불 낮추고 음악 올립니다.</p></div>
-    </div>
-    <div class="prog-row">
-      <time>23:30~</time>
-      <div><h3>클로징</h3><p>단체 사진 찍고, 남는 사람끼리 더. 끝나는 시간은 정해두지 않았어요.</p></div>
+
+    <div class="sched">
+      <details>
+        <summary>
+          <time data-scramble="19:00">19:00</time>
+          <span class="ttl">오픈 · 웰컴 드링크</span>
+          <span class="mk" aria-hidden="true">+</span>
+        </summary>
+        <div class="body"><p>이름표 받고 편한 자리에 앉으세요. 늦게 오셔도 괜찮습니다.</p></div>
+      </details>
+      <details>
+        <summary>
+          <time data-scramble="19:40">19:40</time>
+          <span class="ttl">인사 &amp; 아이스브레이킹</span>
+          <span class="mk" aria-hidden="true">+</span>
+        </summary>
+        <div class="body"><p>테이블별 짧은 소개. 길지 않게 끝냅니다. 혼자 오셔도 이때 다 섞입니다.</p></div>
+      </details>
+      <details open>
+        <summary>
+          <time data-scramble="20:20">20:20</time>
+          <span class="ttl">술게임 토너먼트 <span class="tag">HIGHLIGHT</span></span>
+          <span class="mk" aria-hidden="true">+</span>
+        </summary>
+        <div class="body"><p>테이블별로 붙고, 이긴 팀은 다음 테이블로. 우승 팀에게 상품이 있습니다.</p></div>
+      </details>
+      <details>
+        <summary>
+          <time data-scramble="21:10">21:10</time>
+          <span class="ttl">안주 타임 &amp; 자유 네트워킹</span>
+          <span class="mk" aria-hidden="true">+</span>
+        </summary>
+        <div class="body"><p>음식이 다시 채워집니다. 자리는 마음대로 옮겨 다니셔도 돼요.</p></div>
+      </details>
+      <details>
+        <summary>
+          <time data-scramble="22:00">22:00</time>
+          <span class="ttl">DJ 타임</span>
+          <span class="mk" aria-hidden="true">+</span>
+        </summary>
+        <div class="body"><p>불 낮추고 음악 올립니다. 신청곡은 신청서에 적어 주세요.</p></div>
+      </details>
+      <details>
+        <summary>
+          <time>23:30~</time>
+          <span class="ttl">클로징</span>
+          <span class="mk" aria-hidden="true">+</span>
+        </summary>
+        <div class="body"><p>단체 사진 찍고, 남는 사람끼리 더. 끝나는 시간은 정해두지 않았어요.</p></div>
+      </details>
     </div>
   </section>
 
@@ -451,7 +476,6 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
     <button class="menu-btn" id="closeBtn">(CLOSE)</button>
   </div>
   <nav class="in">
-    <a href="#about" data-nav>소개</a>
     <a href="#program" data-nav>프로그램</a>
     <a href="#info" data-nav>안내</a>
     <a href="#apply" data-nav>신청</a>
@@ -536,7 +560,7 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     }
 
     if (hasGsap && window.ScrollTrigger && !reduce) {
-      gsap.utils.toArray('.listing li, .prog-row, .info-grid > div, .account, .field').forEach(function (el) {
+      gsap.utils.toArray('.sched details, .info-grid > div, .account, .field').forEach(function (el) {
         gsap.from(el, { y: 30, opacity: 0, duration: 0.75, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
       });
       gsap.utils.toArray('.big').forEach(function (el) {
