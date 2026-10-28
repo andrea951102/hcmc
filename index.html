@@ -63,6 +63,10 @@ a { color: inherit; }
   line-height: 0.80; letter-spacing: -0.045em; text-transform: uppercase;
   white-space: nowrap;
 }
+.mega .ln { display: block; overflow: hidden; }
+/* inline-block 이어야 scrollWidth 가 글자 폭을 돌려준다 (fitWm 가 이 값으로 크기를 맞춤) */
+.mega .ln > i { display: inline-block; font-style: normal; }
+.mega .ln.pop { color: var(--pop); }
 .big {
   margin: 0; font-weight: 900; font-size: var(--fs-big);
   line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance;
@@ -268,7 +272,15 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
 <main>
   <!-- 히어로 -->
   <section class="hero-wm">
-    <div class="in"><h1 class="mega" id="heroWm">PARTY</h1></div>
+    <div class="in">
+      <h1 class="mega" id="heroWm">
+        <span class="ln"><i>HEUNG</i></span>
+        <span class="ln"><i>CHUNG</i></span>
+        <span class="ln"><i>MANG</i></span>
+        <span class="ln"><i>CHUNG</i></span>
+        <span class="ln pop"><i>PARTY</i></span>
+      </h1>
+    </div>
     <div class="in hero-meta">
       <span data-scramble="11.14 SAT">11.14 SAT</span>
       <span>선착순 16명</span>
@@ -462,12 +474,19 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
 
   /* ── 히어로 워드마크를 화면 폭에 딱 맞춘다 ── */
   var heroWm = document.getElementById('heroWm');
+  var HERO_MAX = 164; /* 넓은 화면에서 끝없이 커지지 않도록 */
   function fitWm() {
     heroWm.style.fontSize = '';
-    var avail = heroWm.parentElement.clientWidth;
+    var box = heroWm.parentElement;
+    var cs = getComputedStyle(box);
+    var avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     var cur = parseFloat(getComputedStyle(heroWm).fontSize);
-    var w = heroWm.scrollWidth;
-    if (w > 0) heroWm.style.fontSize = Math.floor(cur * (avail / w)) + 'px';
+    var lines = heroWm.querySelectorAll('.ln > i');
+    var widest = 0;
+    for (var i = 0; i < lines.length; i++) widest = Math.max(widest, lines[i].scrollWidth);
+    if (widest > 0 && avail > 0) {
+      heroWm.style.fontSize = Math.floor(Math.min(cur * (avail / widest), HERO_MAX)) + 'px';
+    }
   }
 
   /* ── 스크램블 텍스트 ── */
@@ -513,7 +532,7 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     });
 
     if (hasGsap && !reduce) {
-      gsap.from('#heroWm', { yPercent: 108, duration: 1.05, ease: 'expo.out' });
+      gsap.from('#heroWm .ln > i', { yPercent: 110, duration: 0.95, stagger: 0.075, ease: 'expo.out' });
       gsap.from('#stage', { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.15, ease: 'expo.out', delay: 0.12 });
       gsap.from('.lede > *', { y: 26, opacity: 0, duration: 0.8, stagger: 0.09, ease: 'power3.out', delay: 0.45 });
     }
