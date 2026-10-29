@@ -42,6 +42,8 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--paper);
   color: var(--ink);
+  /* 한글이 단어 중간에서 끊기지 않도록 (어절 단위 줄바꿈) */
+  word-break: keep-all; overflow-wrap: break-word;
   font-family: 'Archivo', 'Noto Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.65;
@@ -462,7 +464,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
     <div class="account">
       <span class="kicker" style="color: inherit; opacity: 0.6">입금 계좌</span>
       <div class="acct-num" id="acct">케이뱅크 100-121-526408</div>
-      <p>예금주 정상윤 · 신청서의 입금자명과 같은 이름으로 보내주세요.</p>
+      <p>예금주 정상윤<br>신청서의 입금자명과 같은 이름으로 보내주세요.</p>
       <button class="copy" id="copyBtn" type="button">계좌번호 복사</button>
     </div>
   </section>
@@ -471,7 +473,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
   <section class="apply in" id="apply">
     <span class="kicker">신청</span>
     <h2 class="big" style="margin-top: 9px">참가 신청</h2>
-    <p style="margin: 10px 0 0; color: var(--mute); font-size: 15px">신청서 작성 → 참가비 입금 → 확정 문자, 이 순서로 진행됩니다.</p>
+    <p style="margin: 10px 0 0; color: var(--mute); font-size: 15px">신청서 작성 → 참가비 입금 → 확정 문자<br>이 순서로 진행됩니다.</p>
 
     <form id="applyForm" novalidate>
       <div class="two">
