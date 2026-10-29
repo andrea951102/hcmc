@@ -101,7 +101,7 @@ body::before {
 }
 
 /* 히어로 */
-.hero-wm { padding-top: 26px; padding-bottom: 10px; overflow: hidden; }
+.hero-wm { padding-top: 26px; padding-bottom: 0; overflow: hidden; }
 .hero-wm > .in:first-child { position: relative; padding-top: 0.75em; font-size: clamp(22px, 6.6vw, 46px); }
 .hero-wm > .in:first-child > .mega { font-size: var(--fs-mega); }
 /* 주최자 서명. 제목 왼쪽 위 모서리에 비스듬히 걸쳐 놓는다.
@@ -167,8 +167,6 @@ body::before {
   font-size: 10px; font-weight: 800; text-align: center; line-height: 1.2;
 }
 
-.lede { padding-top: 30px; padding-bottom: 34px; }
-.lede p { margin: 13px 0 0; max-width: 34em; font-size: 16px; color: var(--mute); line-height: 1.7; }
 
 .cta {
   display: inline-flex; align-items: center; justify-content: center; gap: 12px;
@@ -357,11 +355,6 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
       </div>
     </div>
 
-    <div class="in lede">
-      <span class="kicker">스튜디오 파티</span>
-      <p>술 한 잔, 게임 한 판, 그리고 처음 만나는 사람들. 11월의 스튜디오를 하룻밤만 파티장으로 씁니다.</p>
-      <a class="cta" href="#apply">신청하기 <span class="arrow">→</span></a>
-    </div>
   </section>
 
   <!-- 마키 -->
@@ -646,7 +639,6 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
       gsap.from('#heroWm .ln > i', { yPercent: 110, duration: 0.95, stagger: 0.075, ease: 'expo.out' });
       gsap.from('.sig', { opacity: 0, scale: 0.6, duration: 0.6, ease: 'back.out(2)', delay: 0.55 });
       gsap.from('#stage', { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.15, ease: 'expo.out', delay: 0.12 });
-      gsap.from('.lede > *', { y: 26, opacity: 0, duration: 0.8, stagger: 0.09, ease: 'power3.out', delay: 0.45 });
     }
 
     if (hasGsap && window.ScrollTrigger && !reduce) {
