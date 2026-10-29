@@ -22,7 +22,7 @@
 // Apps Script 편집기에 붙여넣은 코드에만 채워 넣으세요. 이 저장소는 공개라서 비워 둡니다.
 const SPREADSHEET_ID = "여기에_스프레드시트_ID";
 const SHEET_NAME = "신청";
-const VERSION = 3;
+const VERSION = 4;
 
 const PRICE = 50000; // 파티 1회 1인
 const DATES = {
@@ -74,7 +74,7 @@ function doPost(e) {
       date.label,
       clean_(p.name, 30),
       gender,
-      clean_(p.phone, 30),
+      phone_(p.phone),
       age,
       clean_(p.depositor, 30),
       PRICE * date.count,
@@ -129,6 +129,15 @@ function writeHeaders_(sheet) {
   // 긴 글이 들어가는 코멘트 칸은 줄바꿈해서 넓게
   sheet.getRange(1, COL_MEMO, rows, 1).setWrap(true);
   sheet.setColumnWidth(COL_MEMO, 460);
+}
+
+// 연락처는 010-1234-5678 꼴로 맞춰 글자로 저장한다.
+// 하이픈 없이 01012345678 로 넣으면 시트가 숫자로 바꿔 앞의 0 을 지워 버리기 때문.
+function phone_(v) {
+  const d = String(v || "").replace(/\D/g, "");
+  if (/^01\d{8,9}$/.test(d)) return d.replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3");
+  const s = clean_(v, 30);
+  return s.charAt(0) === "'" ? s : "'" + s; // 그 밖의 번호도 글자로 고정
 }
 
 // 길이 제한 + 수식 주입 방지 (= + - @ 로 시작하는 값이 수식으로 실행되지 않게)
