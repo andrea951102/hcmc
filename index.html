@@ -277,6 +277,9 @@ form { display: grid; gap: 20px; margin-top: 24px; }
 .pick { border: 0; margin: 0; padding: 0; min-width: 0; }
 .pick legend { padding: 0; margin-bottom: 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute); }
 .pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pick-grid.duo { grid-template-columns: 1fr 1fr; }
+.pick-grid.duo .pick-box { padding: 12px; text-align: center; }
+.pick-grid.duo .pick-box b { font-size: 17px; }
 .pick-opt { position: relative; cursor: pointer; }
 .pick-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .pick-box {
@@ -506,6 +509,20 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
           <input id="f-phone" name="phone" type="tel" placeholder="010-1234-5678" autocomplete="tel">
         </div>
       </div>
+      <!-- 성별. value 는 Apps Script 의 GENDERS 키와 같아야 합니다 -->
+      <fieldset class="field pick">
+        <legend>성별 <span class="req">*</span></legend>
+        <div class="pick-grid duo">
+          <label class="pick-opt">
+            <input type="radio" name="gender" value="M">
+            <span class="pick-box"><b>남</b></span>
+          </label>
+          <label class="pick-opt">
+            <input type="radio" name="gender" value="F">
+            <span class="pick-box"><b>여</b></span>
+          </label>
+        </div>
+      </fieldset>
       <div class="two">
         <div class="field">
           <label for="f-age">나이 <span class="req">*</span></label>
@@ -792,6 +809,9 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
 
     if (!Object.prototype.hasOwnProperty.call(DATE_INFO, data.get('date'))) {
       return setStatus('참여하실 날짜를 골라 주세요.', true);
+    }
+    if (data.get('gender') !== 'M' && data.get('gender') !== 'F') {
+      return setStatus('성별을 골라 주세요.', true);
     }
     if (!data.get('name') || !data.get('phone') || !data.get('depositor') || !data.get('age')) {
       return setStatus('이름, 연락처, 나이, 입금자명을 입력해 주세요.', true);

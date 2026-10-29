@@ -5,6 +5,7 @@
  * ── 받는 파라미터 (index.html 폼의 name 값) ───────────────────────
  *  date        참여일      필수   1114 / 1121 / both (아래 DATES 의 키)
  *  name        이름        필수   30자
+ *  gender      성별        필수   M / F (아래 GENDERS 의 키)
  *  phone       연락처      필수   30자
  *  age         나이        필수   숫자 19–99
  *  depositor   입금자명    필수   30자
@@ -21,7 +22,7 @@
 // Apps Script 편집기에 붙여넣은 코드에만 채워 넣으세요. 이 저장소는 공개라서 비워 둡니다.
 const SPREADSHEET_ID = "여기에_스프레드시트_ID";
 const SHEET_NAME = "신청";
-const VERSION = 2;
+const VERSION = 3;
 
 const PRICE = 50000; // 파티 1회 1인
 const DATES = {
@@ -30,11 +31,13 @@ const DATES = {
   "both": { label: "양일 (14·21)", count: 2 },
 };
 
+const GENDERS = { "M": "남", "F": "여" };
+
 const HEADERS = [
-  "접수시각", "참여일", "이름", "연락처", "나이", "입금자명", "참가비", "코멘트",
+  "접수시각", "참여일", "이름", "성별", "연락처", "나이", "입금자명", "참가비", "코멘트",
 ];
-const COL_FEE = 7;
-const COL_MEMO = 8;
+const COL_FEE = 8;
+const COL_MEMO = 9;
 
 function doPost(e) {
   const p = (e && e.parameter) || {};
@@ -45,6 +48,11 @@ function doPost(e) {
   const date = Object.prototype.hasOwnProperty.call(DATES, p.date) ? DATES[p.date] : null;
   if (!date) {
     return json_({ result: "error", message: "참여일 값이 올바르지 않습니다" });
+  }
+
+  const gender = Object.prototype.hasOwnProperty.call(GENDERS, p.gender) ? GENDERS[p.gender] : null;
+  if (!gender) {
+    return json_({ result: "error", message: "성별 값이 올바르지 않습니다" });
   }
 
   if (!p.name || !p.phone || !p.depositor || !p.age) {
@@ -65,6 +73,7 @@ function doPost(e) {
       new Date(),
       date.label,
       clean_(p.name, 30),
+      gender,
       clean_(p.phone, 30),
       age,
       clean_(p.depositor, 30),
