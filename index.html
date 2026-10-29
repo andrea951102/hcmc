@@ -562,10 +562,10 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     placeSig(box, lines[0]);
   }
 
-  /* ── 서명 "Andy" 의 글자 밑선이 H 높이의 위쪽 1/3 지점에 오도록 맞춘다 ──
+  /* ── 서명 "Andy" 의 글자 밑선이 H 높이의 위쪽 1/4 지점에 오도록 맞춘다 ──
      제목 크기는 fitWm 이 화면마다 다르게 잡기 때문에 CSS 의 em 값만으로는 비율이 어긋난다.
      글꼴 치수(canvas)로 H 의 윗선과 서명의 밑선을 계산해 top 을 직접 넣는다. */
-  var SIG_COVER = 1 / 3;
+  var SIG_COVER = 1 / 4;
   function placeSig(box, firstLine) {
     var sig = document.querySelector('.sig');
     if (!sig || !firstLine) return;
