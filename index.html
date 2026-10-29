@@ -216,7 +216,7 @@ body::before {
 .sched details[open] .body { animation: slip 0.45s cubic-bezier(0.5, 1, 0.89, 1); }
 @keyframes slip { from { opacity: 0; transform: translateY(-8px); } }
 @media (max-width: 460px) { .sched .body { padding-left: 0; } }
-/* 강조 배지. 지금은 쓰는 항목이 없지만 <span class="tag">HIGHLIGHT</span> 로 붙이면 된다 */
+/* 강조 배지. 항목 제목 안에 <span class="tag">HIGHLIGHT</span> 로 붙인다 */
 .tag {
   display: inline-block; vertical-align: middle; margin-left: 6px;
   font-size: 9px; font-weight: 800; letter-spacing: 0.14em;
@@ -401,7 +401,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
       <details>
         <summary>
           <time data-scramble="21:00">21:00</time>
-          <span class="ttl">파티 프로그램 진행</span>
+          <span class="ttl">파티 프로그램 진행 <span class="tag">HIGHLIGHT</span></span>
           <span class="mk" aria-hidden="true">+</span>
         </summary>
         <div class="body">
