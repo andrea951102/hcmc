@@ -28,7 +28,8 @@
   --panel-ink: #0B0B0B;
   color-scheme: dark;
 
-  --fs-mega: clamp(52px, 19.5vw, 230px);
+  /* fitWm 이 맞춰 줄 크기(폭의 11.4~12.3%)와 거의 같게 시작해야 로딩 때 제목이 크게 떴다가 줄어들지 않는다 */
+  --fs-mega: clamp(36px, calc(12.6vw - 5px), 164px);
   --fs-big: clamp(26px, 7.6vw, 68px);
   --gut: max(18px, env(safe-area-inset-left, 0px));
   --gut-r: max(18px, env(safe-area-inset-right, 0px));
@@ -666,6 +667,8 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     });
   }
 
+  /* 제목 글꼴(Archivo)은 가벼워서 먼저 도착한다. 한글 글꼴까지 다 기다리지 말고 바로 맞춘다 */
+  if (document.fonts && document.fonts.load) document.fonts.load('900 1em Archivo').then(fitWm, function () {});
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);
   else window.addEventListener('load', start);
 
