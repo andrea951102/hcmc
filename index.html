@@ -256,6 +256,16 @@ body::before {
   font: inherit; font-weight: 800; font-size: 14px; cursor: pointer;
   background: var(--panel-ink); color: var(--panel); border: 0;
 }
+/* 어두운 바탕 위의 작은 버튼 (주소 옆 지도 링크) */
+.addr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 4px; }
+.copy-sm {
+  font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; cursor: pointer;
+  color: var(--ink); background: none; border: 1px solid var(--line);
+  padding: 6px 10px; min-height: 32px; line-height: 1;
+  display: inline-flex; align-items: center; text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.copy-sm:hover { border-color: var(--pop); color: var(--pop); }
 
 /* 신청 폼 */
 .apply { padding-top: 10px; padding-bottom: 56px; }
@@ -444,7 +454,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
       </div>
       <div>
         <dt>장소</dt>
-        <dd>스튜디오비긴즈<small>서울 마포구 월드컵북로14길 28, 302호<br>망원역 1번 출구에서 161m<br>출구에서 안쪽 길로 들어오면 오른쪽에 고래빌딩이 있어요. 1층에 카페 ‘오월일일’이 있는 건물입니다. 3층으로 올라오세요.</small></dd>
+        <dd>스튜디오비긴즈<small><span class="addr-row"><span>서울 마포구 월드컵로14길 28 302호</span><a class="copy-sm" href="https://naver.me/xAFvLB1W" target="_blank" rel="noopener">지도 보기 ↗</a></span>망원역 1번 출구에서 161m<br>출구에서 안쪽 길로 들어오면 오른쪽에 고래빌딩이 있어요. 1층에 카페 ‘오월일일’이 있는 건물입니다. 3층으로 올라오세요.</small></dd>
       </div>
       <div>
         <dt>참가비</dt>
@@ -460,7 +470,7 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
       <span class="kicker" style="color: inherit; opacity: 0.6">입금 계좌</span>
       <div class="acct-num" id="acct">케이뱅크 100-121-526408</div>
       <p>예금주 정상윤<br>신청서의 입금자명과 같은 이름으로 보내주세요.</p>
-      <button class="copy" id="copyBtn" type="button">계좌번호 복사</button>
+      <button class="copy" type="button" data-copy="acct">계좌번호 복사</button>
     </div>
   </section>
 
@@ -694,19 +704,34 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
   overlay.querySelectorAll('[data-nav]').forEach(function (a) { a.addEventListener('click', closeMenu); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
 
-  /* ── 계좌 복사 ── */
-  var copyBtn = document.getElementById('copyBtn');
-  copyBtn.addEventListener('click', function () {
-    var text = document.getElementById('acct').textContent.trim();
-    var done = function () {
-      copyBtn.textContent = '복사됨';
-      setTimeout(function () { copyBtn.textContent = '계좌번호 복사'; }, 1800);
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, function () { copyBtn.textContent = '길게 눌러 복사'; });
-    } else {
-      copyBtn.textContent = '길게 눌러 복사';
-    }
+  /* ── 복사 버튼 — data-copy 에 복사할 요소의 id ── */
+  function legacyCopy(text) {
+    /* 카카오톡 등 인앱 브라우저에서 clipboard API 가 막혔을 때 */
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    var label = btn.textContent;
+    btn.addEventListener('click', function () {
+      var text = document.getElementById(btn.getAttribute('data-copy')).textContent.trim();
+      var show = function (msg) {
+        btn.textContent = msg;
+        setTimeout(function () { btn.textContent = label; }, 1800);
+      };
+      var fallback = function () { show(legacyCopy(text) ? '복사됨' : '길게 눌러 복사'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { show('복사됨'); }, fallback);
+      } else {
+        fallback();
+      }
+    });
   });
 
   /* ── 신청 폼 → Google Sheet ── */
