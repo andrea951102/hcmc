@@ -175,13 +175,8 @@ body::before {
 }
 .marquee .dot { color: var(--pop); }
 
-/* 그날 하는 것 = 프로그램 (펼침 목록) */
+/* 타임라인 = 프로그램 (펼침 목록) */
 .program { padding-top: 44px; padding-bottom: 44px; }
-.tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
-.tags span {
-  font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
-  border: 1px solid var(--line); color: var(--mute); padding: 6px 12px;
-}
 .sched { margin-top: 26px; border-top: 1px solid var(--line); }
 .sched details { border-bottom: 1px solid var(--line); }
 .sched summary {
@@ -207,9 +202,21 @@ body::before {
 .sched details[open] .mk { transform: rotate(45deg); }
 .sched .body { padding: 0 0 18px 74px; }
 .sched .body p { margin: 0; font-size: 15px; color: var(--mute); line-height: 1.7; }
+.sched .body p + p { margin-top: 10px; }
+/* 항목별 사진. figure 를 한 개 넣든 .shots 로 여러 장을 넣든 된다 */
+.sched .shots { display: grid; gap: 10px; margin-top: 14px; }
+@media (min-width: 560px) { .sched .shots.two { grid-template-columns: 1fr 1fr; } }
+.sched figure { margin: 14px 0 0; }
+.sched .shots figure { margin: 0; }
+.sched figure img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 4 / 3; object-fit: cover; background: var(--line);
+}
+.sched figcaption { margin-top: 7px; font-size: 13px; color: var(--mute); line-height: 1.6; }
 .sched details[open] .body { animation: slip 0.45s cubic-bezier(0.5, 1, 0.89, 1); }
 @keyframes slip { from { opacity: 0; transform: translateY(-8px); } }
 @media (max-width: 460px) { .sched .body { padding-left: 0; } }
+/* 강조 배지. 지금은 쓰는 항목이 없지만 <span class="tag">HIGHLIGHT</span> 로 붙이면 된다 */
 .tag {
   display: inline-block; vertical-align: middle; margin-left: 6px;
   font-size: 9px; font-weight: 800; letter-spacing: 0.14em;
@@ -347,63 +354,69 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
     </div>
   </div>
 
-  <!-- 그날 하는 것 (= 프로그램) -->
+  <!-- 타임라인 (= 프로그램) -->
   <section class="program in" id="program">
-    <span class="kicker">그날 하는 것</span>
-    <h2 class="big" style="margin-top: 9px">그날 밤의 순서</h2>
-
-    <div class="tags">
-      <span>술게임</span><span>DJ 셋</span><span>무제한 안주</span><span>새로운 사람</span>
-    </div>
+    <span class="kicker">타임라인</span>
+    <h2 class="big" style="margin-top: 9px">이렇게 진행됩니다</h2>
 
     <div class="sched">
-      <details>
+      <!--
+        항목 하나를 추가하려면 <details> 블록을 통째로 복사해서 time / ttl / body 만 바꾸면 됩니다.
+        본문에는 <p> 를 여러 개 넣어도 되고, 사진은 아래 두 가지 중 하나로 넣습니다.
+
+          한 장:
+            <figure>
+              <img src="assets/program-1.jpg" alt="">
+              <figcaption>사진 설명 (없으면 figcaption 줄을 지우세요)</figcaption>
+            </figure>
+
+          두 장 이상:
+            <div class="shots two">
+              <figure><img src="assets/program-1.jpg" alt=""></figure>
+              <figure><img src="assets/program-2.jpg" alt=""></figure>
+            </div>
+
+        사진은 assets/ 폴더에 넣고 가로 1200px, 300KB 안쪽이면 충분합니다.
+      -->
+      <details open>
         <summary>
           <time data-scramble="19:00">19:00</time>
           <span class="ttl">오픈 · 웰컴 드링크</span>
           <span class="mk" aria-hidden="true">+</span>
         </summary>
-        <div class="body"><p>이름표 받고 편한 자리에 앉으세요. 늦게 오셔도 괜찮습니다.</p></div>
+        <div class="body">
+          <p>이름표 받고 편한 자리에 앉으세요. 늦게 오셔도 괜찮습니다.</p>
+        </div>
       </details>
       <details>
         <summary>
-          <time data-scramble="19:40">19:40</time>
+          <time data-scramble="19:30">19:30</time>
           <span class="ttl">인사 &amp; 아이스브레이킹</span>
           <span class="mk" aria-hidden="true">+</span>
         </summary>
-        <div class="body"><p>테이블별 짧은 소개. 길지 않게 끝냅니다. 혼자 오셔도 이때 다 섞입니다.</p></div>
-      </details>
-      <details open>
-        <summary>
-          <time data-scramble="20:20">20:20</time>
-          <span class="ttl">술게임 토너먼트 <span class="tag">HIGHLIGHT</span></span>
-          <span class="mk" aria-hidden="true">+</span>
-        </summary>
-        <div class="body"><p>테이블별로 붙고, 이긴 팀은 다음 테이블로. 우승 팀에게 상품이 있습니다.</p></div>
+        <div class="body">
+          <p>테이블별 짧은 소개. 길지 않게 끝냅니다. 혼자 오셔도 이때 다 섞입니다.</p>
+        </div>
       </details>
       <details>
         <summary>
-          <time data-scramble="21:10">21:10</time>
-          <span class="ttl">안주 타임 &amp; 자유 네트워킹</span>
+          <time data-scramble="21:00">21:00</time>
+          <span class="ttl">파티 프로그램 진행</span>
           <span class="mk" aria-hidden="true">+</span>
         </summary>
-        <div class="body"><p>음식이 다시 채워집니다. 자리는 마음대로 옮겨 다니셔도 돼요.</p></div>
+        <div class="body">
+          <p>그날의 메인 순서입니다. 자세한 내용은 곧 채워 넣겠습니다.</p>
+        </div>
       </details>
       <details>
         <summary>
           <time data-scramble="22:00">22:00</time>
-          <span class="ttl">DJ 타임</span>
+          <span class="ttl">자유 네트워킹</span>
           <span class="mk" aria-hidden="true">+</span>
         </summary>
-        <div class="body"><p>불 낮추고 음악 올립니다. 신청곡은 신청서에 적어 주세요.</p></div>
-      </details>
-      <details>
-        <summary>
-          <time>23:30~</time>
-          <span class="ttl">클로징</span>
-          <span class="mk" aria-hidden="true">+</span>
-        </summary>
-        <div class="body"><p>단체 사진 찍고, 남는 사람끼리 더. 끝나는 시간은 정해두지 않았어요.</p></div>
+        <div class="body">
+          <p>자리는 마음대로 옮겨 다니셔도 돼요. 끝나는 시간은 정해두지 않았습니다.</p>
+        </div>
       </details>
     </div>
   </section>

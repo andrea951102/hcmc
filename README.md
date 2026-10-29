@@ -55,6 +55,24 @@ Google Sheets 셀은 한 칸에 5만 자까지 들어가므로 2,000자는 넉�
 - `[010-0000-0000]`
 - 날짜, 시간, 참가비, 프로그램 시간표
 
+타임라인(`#program`)의 항목 하나는 `<details>` 블록 하나입니다. 통째로 복사해서 `time` / `ttl` / `body` 만 바꾸면 항목이 늘어납니다. 본문에는 `<p>` 를 여러 개 넣어도 되고, 사진은 이렇게 붙입니다.
+
+```html
+<!-- 한 장 -->
+<figure>
+  <img src="assets/program-1.jpg" alt="">
+  <figcaption>사진 설명 (없으면 이 줄을 지우세요)</figcaption>
+</figure>
+
+<!-- 두 장 이상 — 넓은 화면에서 2단으로 갈라집니다 -->
+<div class="shots two">
+  <figure><img src="assets/program-1.jpg" alt=""></figure>
+  <figure><img src="assets/program-2.jpg" alt=""></figure>
+</div>
+```
+
+사진은 `assets/` 폴더에 넣고 가로 1200px, 300KB 안쪽이면 충분합니다. 비율은 4:3 으로 잘려 보이니 그 점만 감안하세요. 같은 안내가 `index.html` 의 타임라인 위에도 주석으로 적혀 있습니다.
+
 ## 디자인
 
 - **MIDNIGHT** — 검정 바탕(`#0B0B0B`)에 흰 글자, 포인트는 주황(`#FF3B00`).
