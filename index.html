@@ -99,7 +99,7 @@ body::before {
 
 /* 히어로 */
 .hero-wm { padding-top: 26px; padding-bottom: 10px; overflow: hidden; }
-.hero-wm > .in:first-child { position: relative; padding-top: 1.45em; font-size: clamp(22px, 6.6vw, 46px); }
+.hero-wm > .in:first-child { position: relative; padding-top: 0.75em; font-size: clamp(22px, 6.6vw, 46px); }
 .hero-wm > .in:first-child > .mega { font-size: var(--fs-mega); }
 /* 주최자 서명. 제목 왼쪽 위 모서리에 비스듬히 걸쳐 놓는다.
    기울기는 --sig-tilt 하나로 조절 (-45deg 처럼 가파르게 하면 위 여백도 같이 늘려야 함) */
@@ -559,6 +559,41 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     if (widest > 0 && avail > 0) {
       heroWm.style.fontSize = Math.floor(Math.min(cur * (avail / widest), HERO_MAX)) + 'px';
     }
+    placeSig(box, lines[0]);
+  }
+
+  /* ── 서명 "Andy" 의 글자 밑선이 H 높이의 위쪽 1/3 지점에 오도록 맞춘다 ──
+     제목 크기는 fitWm 이 화면마다 다르게 잡기 때문에 CSS 의 em 값만으로는 비율이 어긋난다.
+     글꼴 치수(canvas)로 H 의 윗선과 서명의 밑선을 계산해 top 을 직접 넣는다. */
+  var SIG_COVER = 1 / 3;
+  function placeSig(box, firstLine) {
+    var sig = document.querySelector('.sig');
+    if (!sig || !firstLine) return;
+    var ctx = document.createElement('canvas').getContext('2d');
+    if (!ctx || !ctx.measureText('H').fontBoundingBoxAscent) return; /* 구형 브라우저: CSS 값 그대로 */
+
+    /* 제목 첫 줄: 기준선과 H 윗선 */
+    var hs = getComputedStyle(heroWm);
+    var F = parseFloat(hs.fontSize);
+    ctx.font = hs.fontWeight + ' ' + F + 'px ' + hs.fontFamily;
+    var hm = ctx.measureText('H');
+    var lr = firstLine.getBoundingClientRect();
+    var br = box.getBoundingClientRect();
+    var base = lr.top - br.top + (lr.height - (hm.fontBoundingBoxAscent + hm.fontBoundingBoxDescent)) / 2 + hm.fontBoundingBoxAscent;
+    var capTop = base - hm.actualBoundingBoxAscent;
+    var target = capTop + hm.actualBoundingBoxAscent * SIG_COVER;
+
+    /* 서명: 회전 전 기준선 위치 + H 가운데 지점에서 회전으로 올라가는 만큼 */
+    var ss = getComputedStyle(sig);
+    var f = parseFloat(ss.fontSize);
+    ctx.font = ss.fontWeight + ' ' + f + 'px ' + ss.fontFamily;
+    var sm = ctx.measureText('Andy');
+    var lh = sig.offsetHeight;
+    var sigBase = (lh - (sm.fontBoundingBoxAscent + sm.fontBoundingBoxDescent)) / 2 + sm.fontBoundingBoxAscent;
+    var tilt = parseFloat(ss.getPropertyValue('--sig-tilt')) * Math.PI / 180 || 0;
+    var hx = (lr.left - br.left) + hm.width / 2 - sig.offsetLeft;
+    var rotated = lh + hx * Math.sin(tilt) + (sigBase - lh) * Math.cos(tilt); /* 회전축은 왼쪽 아래 */
+    sig.style.top = (target - rotated) + 'px';
   }
 
   /* ── 스크램블 텍스트 ── */
