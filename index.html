@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Yellowtail&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
 
 <style>
 /* ── MIDNIGHT ──────────────────────────────────────────────
@@ -102,19 +102,6 @@ body::before {
 
 /* 히어로 */
 .hero-wm { padding-top: 26px; padding-bottom: 0; overflow: hidden; }
-.hero-wm > .in:first-child { position: relative; padding-top: 0.75em; font-size: clamp(22px, 6.6vw, 46px); }
-.hero-wm > .in:first-child > .mega { font-size: var(--fs-mega); }
-/* 주최자 서명. 제목 왼쪽 위 모서리에 비스듬히 걸쳐 놓는다.
-   기울기는 --sig-tilt 하나로 조절 (-45deg 처럼 가파르게 하면 위 여백도 같이 늘려야 함) */
-.sig {
-  --sig-tilt: -12deg;
-  position: absolute; z-index: 1; left: calc(var(--gut) - 0.15em); top: 0.63em;
-  font-family: "Yellowtail", cursive; font-weight: 400; font-style: normal;
-  font-size: 1em; line-height: 1; white-space: nowrap;
-  color: var(--pop); transform: rotate(var(--sig-tilt)); transform-origin: 0 100%;
-  text-shadow: 0 0 0.1em var(--paper);
-  pointer-events: none;
-}
 .hero-meta {
   display: flex; justify-content: space-between; gap: 10px;
   padding-bottom: 16px; font-size: 11px; font-weight: 600;
@@ -353,7 +340,6 @@ footer { background: var(--panel); color: var(--panel-ink); padding-top: 40px; p
   <!-- 히어로 -->
   <section class="hero-wm">
     <div class="in">
-      <span class="sig">Andy Chung&rsquo;s</span>
       <h1 class="mega" id="heroWm">
         <span class="ln"><i>HEUNG CHUNG</i></span>
         <span class="ln"><i>MANG CHUNG</i></span>
@@ -608,41 +594,6 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
     if (widest > 0 && avail > 0) {
       heroWm.style.fontSize = Math.floor(Math.min(cur * (avail / widest), HERO_MAX)) + 'px';
     }
-    placeSig(box, lines[0]);
-  }
-
-  /* ── 서명 "Andy" 의 글자 밑선이 H 높이의 위쪽 1/4 지점에 오도록 맞춘다 ──
-     제목 크기는 fitWm 이 화면마다 다르게 잡기 때문에 CSS 의 em 값만으로는 비율이 어긋난다.
-     글꼴 치수(canvas)로 H 의 윗선과 서명의 밑선을 계산해 top 을 직접 넣는다. */
-  var SIG_COVER = 1 / 4;
-  function placeSig(box, firstLine) {
-    var sig = document.querySelector('.sig');
-    if (!sig || !firstLine) return;
-    var ctx = document.createElement('canvas').getContext('2d');
-    if (!ctx || !ctx.measureText('H').fontBoundingBoxAscent) return; /* 구형 브라우저: CSS 값 그대로 */
-
-    /* 제목 첫 줄: 기준선과 H 윗선 */
-    var hs = getComputedStyle(heroWm);
-    var F = parseFloat(hs.fontSize);
-    ctx.font = hs.fontWeight + ' ' + F + 'px ' + hs.fontFamily;
-    var hm = ctx.measureText('H');
-    var lr = firstLine.getBoundingClientRect();
-    var br = box.getBoundingClientRect();
-    var base = lr.top - br.top + (lr.height - (hm.fontBoundingBoxAscent + hm.fontBoundingBoxDescent)) / 2 + hm.fontBoundingBoxAscent;
-    var capTop = base - hm.actualBoundingBoxAscent;
-    var target = capTop + hm.actualBoundingBoxAscent * SIG_COVER;
-
-    /* 서명: 회전 전 기준선 위치 + H 가운데 지점에서 회전으로 올라가는 만큼 */
-    var ss = getComputedStyle(sig);
-    var f = parseFloat(ss.fontSize);
-    ctx.font = ss.fontWeight + ' ' + f + 'px ' + ss.fontFamily;
-    var sm = ctx.measureText('Andy');
-    var lh = sig.offsetHeight;
-    var sigBase = (lh - (sm.fontBoundingBoxAscent + sm.fontBoundingBoxDescent)) / 2 + sm.fontBoundingBoxAscent;
-    var tilt = parseFloat(ss.getPropertyValue('--sig-tilt')) * Math.PI / 180 || 0;
-    var hx = (lr.left - br.left) + hm.width / 2 - sig.offsetLeft;
-    var rotated = lh + hx * Math.sin(tilt) + (sigBase - lh) * Math.cos(tilt); /* 회전축은 왼쪽 아래 */
-    sig.style.top = (target - rotated) + 'px';
   }
 
   /* ── 스크램블 텍스트 ── */
@@ -689,7 +640,6 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTcuCFequu22PgOxhud1N
 
     if (hasGsap && !reduce) {
       gsap.from('#heroWm .ln > i', { yPercent: 110, duration: 0.95, stagger: 0.075, ease: 'expo.out' });
-      gsap.from('.sig', { opacity: 0, scale: 0.6, duration: 0.6, ease: 'back.out(2)', delay: 0.55 });
       gsap.from('#stage', { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.15, ease: 'expo.out', delay: 0.12 });
     }
 
